@@ -3,18 +3,21 @@
 ## Implementation Plan
 
 ### Phase 1: Project scaffold
-- [ ] **Commit 1**: Set up package structure + test infrastructure (`micrograd/__init__.py`, `engine.py`, `nn.py`, `test/test_engine.py`, `setup.py`)
+
+- [x] **Commit 1**: Set up package structure + test infrastructure (`micrograd/__init__.py`, `engine.py`, `nn.py`, `test/test_engine.py`, `setup.py`)
 
 ### Phase 2: `Value` class — engine + tests
-- [ ] **Commit 2**: `Value.__init__` + `__repr__` — test: instantiate, check `.data`, `.grad`, `repr`
-- [ ] **Commit 3**: `__add__` + backward — test: forward value correct, grad correct vs PyTorch
-- [ ] **Commit 4**: `__mul__` + backward — test: forward + grad vs PyTorch
-- [ ] **Commit 5**: `__pow__` + backward — test: forward + grad vs PyTorch
-- [ ] **Commit 6**: `relu` + backward — test: positive/negative input, grad vs PyTorch
-- [ ] **Commit 7**: `backward()` (topo sort + chain rule) — test: multi-node graph, all grads vs PyTorch
+
+- [x] **Commit 2**: `Value.__init__` + `__repr__` — test: instantiate, check `.data`, `.grad`, `repr`
+- [x] **Commit 3**: `__add__` + backward — test: forward value correct, grad correct vs PyTorch
+- [x] **Commit 4**: `__mul__` + backward — test: forward + grad vs PyTorch
+- [x] **Commit 5**: `__pow__` + backward — test: forward + grad vs PyTorch
+- [x] **Commit 6**: `relu` + backward — test: positive/negative input, grad vs PyTorch
+- [x] **Commit 7**: `backward()` (topo sort + chain rule) — test: multi-node graph, all grads vs PyTorch
 - [ ] **Commit 8**: Operator sugar (`__neg__`, `__radd__`, `__sub__`, `__rsub__`, `__rmul__`, `__truediv__`, `__rtruediv__`) — test: full `test_more_ops` expression vs PyTorch
 
 ### Phase 3: Neural net modules + tests
+
 - [ ] **Commit 9**: `Module` + `Neuron` — test: forward pass output shape, `parameters()` count, `zero_grad()`
 - [ ] **Commit 10**: `Layer` + `MLP` — test: MLP forward pass, backward pass updates gradients correctly
 
@@ -23,19 +26,23 @@
 ## Learning Strategy
 
 ### What I (Claude) implement
+
 - **Commit 1**: Scaffold — boilerplate
 - **Commit 2**: `Value.__init__` + `__repr__` — walk through the foundation
 - **Commit 3**: `__add__` + test — full demonstration of the pattern: forward value, closure-based `_backward`, PyTorch comparison test
 
 ### What you implement (with guidance)
+
 - **Commits 4–8**: `__mul__`, `__pow__`, `relu`, `backward()`, operator sugar — same pattern as `__add__`, only the math changes
 - **Commits 9–10**: `nn.py` — composing `Value` ops into neural net modules
 
 ### Quizzes
+
 Before each op you implement, you'll be quizzed on:
-- The math: e.g. *"What is ∂(x*y)/∂x?"*
-- The pattern: e.g. *"What should `_backward` capture in its closure?"*
-- Concepts: e.g. *"Why do we `+=` instead of `=` when accumulating gradients?"*
+
+- The math: e.g. *"What is ∂(x*y)/∂x?"\*
+- The pattern: e.g. _"What should `_backward` capture in its closure?"_
+- Concepts: e.g. _"Why do we `+=` instead of `=` when accumulating gradients?"_
 
 ---
 
