@@ -15,7 +15,7 @@ class Value:
         if not isinstance(other, Value):
             other = Value(other)
 
-        parent = Value(self.data + other.data, children=(self, other), op="+")
+        parent = Value(self.data + other.data, (self, other), "+")
 
         def _backward():
             other.grad += parent.grad
