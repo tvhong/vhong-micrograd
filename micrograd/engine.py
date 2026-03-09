@@ -43,3 +43,13 @@ class Value:
         out._backward = _backward
 
         return out
+
+    def __pow__(self, pow: float) -> "Value":
+        out = Value(self.data**pow, (self,), "**")
+
+        def _backward() -> None:
+            self.grad += pow * self.data ** (pow - 1) * out.grad
+
+        out._backward = _backward
+
+        return out

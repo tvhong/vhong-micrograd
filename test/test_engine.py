@@ -51,3 +51,19 @@ def test_mul():
     assert c.data == ct.data.item()
     assert a.grad == at.grad.item()
     assert b.grad == bt.grad.item()
+
+
+def test_pow():
+    # micrograd
+    a = Value(2.0)
+    b = a**3
+    b.grad = 1.0
+    b._backward()
+
+    # pytorch
+    at = torch.tensor(2.0, requires_grad=True)
+    bt = at**3
+    bt.backward()
+
+    assert b.data == bt.data.item()
+    assert a.grad == at.grad.item()
