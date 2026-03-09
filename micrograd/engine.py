@@ -53,3 +53,14 @@ class Value:
         out._backward = _backward
 
         return out
+
+    def relu(self) -> "Value":
+        out_val = self.data if self.data > 0 else 0
+        out = Value(out_val, (self,), "relu")
+
+        def _backward() -> None:
+            self.grad += out.grad if self.data > 0 else 0
+
+        out._backward = _backward
+
+        return out

@@ -1,3 +1,4 @@
+import pytest
 import torch
 from micrograd.engine import Value
 
@@ -63,6 +64,23 @@ def test_pow():
     # pytorch
     at = torch.tensor(2.0, requires_grad=True)
     bt = at**3
+    bt.backward()
+
+    assert b.data == bt.data.item()
+    assert a.grad == at.grad.item()
+
+
+@pytest.mark.parametrize("val", [2.0, -2.0, 0.0])
+def test_relu(val: float) -> None:
+    # micrograd
+    a = Value(val)
+    b = a.relu()
+    b.grad = 1.0
+    b._backward()
+
+    # pytorch
+    at = torch.tensor(val, requires_grad=True)
+    bt = at.relu()
     bt.backward()
 
     assert b.data == bt.data.item()
