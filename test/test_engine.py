@@ -12,7 +12,7 @@ def test_init():
 
 def test_repr():
     a = Value(3.0)
-    assert repr(a) == "Value(data=3.0, grad=0)"
+    assert repr(a) == "Value(data=3.0, grad=0.0)"
 
 
 def test_add():
