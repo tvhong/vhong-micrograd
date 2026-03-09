@@ -1,12 +1,12 @@
 class Value:
     """stores a single scalar value and its gradient"""
 
-    def __init__(self, data, _children=(), _op=""):
+    def __init__(self, data, children=(), op=""):
         self.data = data
         self.grad = 0
         self._backward = lambda: None
-        self._prev = set(_children)
-        self._op = _op
+        self._prev = set(children)
+        self._op = op
 
     def __repr__(self):
         return f"Value(data={self.data}, grad={self.grad})"
@@ -15,7 +15,7 @@ class Value:
         if not isinstance(other, Value):
             other = Value(other)
 
-        parent = Value(self.data + other.data, _children=(self, other), _op="+")
+        parent = Value(self.data + other.data, children=(self, other), op="+")
 
         def _backward():
             other.grad += parent.grad
