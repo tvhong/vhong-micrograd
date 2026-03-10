@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Callable
 
 
 class Value:
@@ -87,16 +87,16 @@ class Value:
     def __neg__(self) -> "Value":
         return self * -1
 
-    def __sub__(self, other: "Value") -> "Value":
+    def __sub__(self, other: "Value | float") -> "Value":
         return self + -other
 
-    def __radd__(self, other: Any) -> "Value":
+    def __radd__(self, other: "Value | float") -> "Value":
         return self + other
 
-    def __rmul__(self, other: Any) -> "Value":
+    def __rmul__(self, other: "Value | float") -> "Value":
         return self * other
 
-    def __rsub__(self, other: Any) -> "Value":
+    def __rsub__(self, other: "Value | float") -> "Value":
         return -self + other
 
     def __truediv__(self, other: "Value | float") -> "Value":
