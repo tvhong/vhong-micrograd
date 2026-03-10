@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import Any, Callable
 
 
 class Value:
@@ -89,3 +89,9 @@ class Value:
 
     def __sub__(self, other: "Value") -> "Value":
         return self + -other
+
+    def __radd__(self, other: Any) -> "Value":
+        return self + other
+
+    def __rmul__(self, other: Any) -> "Value":
+        return self * other

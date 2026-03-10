@@ -120,6 +120,36 @@ def test_sub():
     assert b.grad == bt.grad.item()
 
 
+def test_radd():
+    # micrograd
+    a = Value(3.0)
+    b = 2.0 + a
+    b.backward()
+
+    # pytorch
+    at = torch.tensor(3.0, requires_grad=True)
+    bt = 2.0 + at
+    bt.backward()
+
+    assert b.data == bt.data.item()
+    assert a.grad == at.grad.item()
+
+
+def test_rmul():
+    # micrograd
+    a = Value(3.0)
+    b = 2.0 * a
+    b.backward()
+
+    # pytorch
+    at = torch.tensor(3.0, requires_grad=True)
+    bt = 2.0 * at
+    bt.backward()
+
+    assert b.data == bt.data.item()
+    assert a.grad == at.grad.item()
+
+
 def test_backward():
     # micrograd
     a = Value(2.0)
