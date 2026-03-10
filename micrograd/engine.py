@@ -64,3 +64,22 @@ class Value:
         out._backward = _backward
 
         return out
+
+    def backward(self) -> None:
+        visited: set["Value"] = set()
+        topo: list["Value"] = list()
+
+        def build_topo(v: "Value"):
+            """Build a topology from children to root"""
+            if v not in visited:
+                visited.add(v)
+                for child in v._prev:
+                    build_topo(child)
+                topo.append(v)  # append after children
+
+        build_topo(self)
+        topo = topo[::-1]
+
+        self.grad = 1
+        for v in topo:
+            v._backward()

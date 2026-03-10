@@ -85,3 +85,27 @@ def test_relu(val: float) -> None:
 
     assert b.data == bt.data.item()
     assert a.grad == at.grad.item()
+
+
+def test_backward():
+    # micrograd
+    a = Value(2.0)
+    b = Value(3.0)
+    c = a + b
+    d = c * a
+    d.backward()
+
+    # pytorch
+    at = torch.tensor(2.0, requires_grad=True)
+    bt = torch.tensor(3.0, requires_grad=True)
+    ct = at + bt
+    dt = ct * at
+    ct.retain_grad()
+    dt.retain_grad()
+    dt.backward()
+
+    assert d.data == dt.data.item()
+    assert a.grad == at.grad.item()
+    assert b.grad == bt.grad.item()
+    assert c.grad == ct.grad.item()
+    assert d.grad == dt.grad.item()
