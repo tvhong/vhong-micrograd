@@ -95,3 +95,12 @@ class Value:
 
     def __rmul__(self, other: Any) -> "Value":
         return self * other
+
+    def __rsub__(self, other: Any) -> "Value":
+        return -self + other
+
+    def __truediv__(self, other: "Value | float") -> "Value":
+        return self * other ** (-1)
+
+    def __rtruediv__(self, other: "Value | float") -> "Value":
+        return self ** (-1) * other

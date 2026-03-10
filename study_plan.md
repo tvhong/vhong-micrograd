@@ -14,7 +14,7 @@
 - [x] **Commit 5**: `__pow__` + backward — test: forward + grad vs PyTorch
 - [x] **Commit 6**: `relu` + backward — test: positive/negative input, grad vs PyTorch
 - [x] **Commit 7**: `backward()` (topo sort + chain rule) — test: multi-node graph, all grads vs PyTorch
-- [ ] **Commit 8**: Operator sugar (`__neg__`, `__radd__`, `__sub__`, `__rsub__`, `__rmul__`, `__truediv__`, `__rtruediv__`) — test: full `test_more_ops` expression vs PyTorch
+- [x] **Commit 8**: Operator sugar (`__neg__`, `__radd__`, `__sub__`, `__rsub__`, `__rmul__`, `__truediv__`, `__rtruediv__`) — test: full `test_more_ops` expression vs PyTorch
 
 ### Phase 3: Neural net modules + tests
 
