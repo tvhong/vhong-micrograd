@@ -7,7 +7,7 @@ class Value:
     """stores a single scalar value and its gradient"""
 
     def __init__(
-        self, data: float, children: tuple["Value", ...] = (), op: str = ""
+        self, data: float | int, children: tuple["Value", ...] = (), op: str = ""
     ) -> None:
         self.data: float = data
         self.grad: float = 0.0
@@ -18,7 +18,7 @@ class Value:
     def __repr__(self) -> str:
         return f"Value(data={self.data}, grad={self.grad})"
 
-    def __add__(self, other: "Value | float") -> "Value":
+    def __add__(self, other: "Value | float | int") -> "Value":
         other = other if isinstance(other, Value) else Value(other)
 
         out = Value(self.data + other.data, (self, other), "+")
@@ -31,7 +31,7 @@ class Value:
 
         return out
 
-    def __mul__(self, other: "Value | float") -> "Value":
+    def __mul__(self, other: "Value | float | int") -> "Value":
         other = other if isinstance(other, Value) else Value(other)
 
         out = Value(self.data * other.data, (self, other), "*")
@@ -87,20 +87,20 @@ class Value:
     def __neg__(self) -> "Value":
         return self * -1
 
-    def __sub__(self, other: "Value | float") -> "Value":
+    def __sub__(self, other: "Value | float | int") -> "Value":
         return self + -other
 
-    def __radd__(self, other: "Value | float") -> "Value":
+    def __radd__(self, other: "Value | float | int") -> "Value":
         return self + other
 
-    def __rmul__(self, other: "Value | float") -> "Value":
+    def __rmul__(self, other: "Value | float | int") -> "Value":
         return self * other
 
-    def __rsub__(self, other: "Value | float") -> "Value":
+    def __rsub__(self, other: "Value | float | int") -> "Value":
         return -self + other
 
-    def __truediv__(self, other: "Value | float") -> "Value":
+    def __truediv__(self, other: "Value | float | int") -> "Value":
         return self * other ** (-1)
 
-    def __rtruediv__(self, other: "Value | float") -> "Value":
+    def __rtruediv__(self, other: "Value | float | int") -> "Value":
         return self ** (-1) * other
