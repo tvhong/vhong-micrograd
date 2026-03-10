@@ -83,3 +83,9 @@ class Value:
         self.grad = 1
         for v in topo:
             v._backward()
+
+    def __neg__(self) -> "Value":
+        return self * -1
+
+    def __sub__(self, other: "Value") -> "Value":
+        return self + -other
