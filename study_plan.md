@@ -18,8 +18,8 @@
 
 ### Phase 3: Neural net modules + tests
 
-- [ ] **Commit 9**: `Module` + `Neuron` — test: forward pass output shape, `parameters()` count, `zero_grad()`
-- [ ] **Commit 10**: `Layer` + `MLP` — test: MLP forward pass, backward pass updates gradients correctly
+- [x] **Commit 9**: `Module` + `Neuron` — test: forward pass output shape, `parameters()` count, `zero_grad()`
+- [x] **Commit 10**: `Layer` + `MLP` — test: MLP forward pass, backward pass updates gradients correctly
 
 ---
 

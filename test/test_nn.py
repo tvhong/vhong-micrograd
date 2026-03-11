@@ -1,4 +1,4 @@
-from micrograd.nn import Module, Neuron
+from micrograd.nn import MLP, Layer, Module, Neuron
 from micrograd.engine import Value
 
 
@@ -49,3 +49,38 @@ def test_neuron_zero_grad():
 
     n.zero_grad()
     assert all(p.grad == 0 for p in n.parameters())
+
+
+def test_layer_parameters_count():
+    l1 = Layer(3, 4)
+
+    assert len(l1.parameters()) == 4 * (3 + 1)
+
+
+def test_layer_output_shape():
+    out = Layer(3, 4)([1, 2, 3])
+    assert len(out) == 4
+
+
+def test_layer_output_non_negative():
+    for _ in range(100):
+        out = Layer(3, 4)([1, 2, 3])
+        assert all(y.data >= 0 for y in out)
+
+
+def test_mlp_parameters_count():
+    mlp = MLP(3, [4, 4, 1])
+
+    assert len(mlp.parameters()) == (3 + 1) * 4 + (4 + 1) * 4 + (4 + 1) * 1
+
+
+def test_mlp_output_shape():
+    out = MLP(3, [4, 4, 1])([1, 2, 3])
+
+    assert len(out) == 1
+
+
+def test_mlp_output_non_negative():
+    for _ in range(100):
+        out = MLP(3, [4, 4, 1])([1, 2, 3])
+        assert all(y.data >= 0 for y in out)
