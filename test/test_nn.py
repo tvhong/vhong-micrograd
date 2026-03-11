@@ -102,10 +102,21 @@ def test_mlp_output_shape():
     assert len(out) == 1
 
 
-def test_mlp_output_non_negative():
-    for _ in range(100):
-        out = MLP(3, [4, 4, 1])([1, 2, 3])
-        assert all(y.data >= 0 for y in out)
+def test_mlp_last_layer_is_linear():
+    mlp = MLP(2, [2, 1])
+
+    # Hidden layer (relu): both neurons output 1.0
+    mlp._layers[0]._neurons[0]._weights = [Value(1.0), Value(1.0)]
+    mlp._layers[0]._neurons[0]._bias = Value(0.0)
+    mlp._layers[0]._neurons[1]._weights = [Value(1.0), Value(1.0)]
+    mlp._layers[0]._neurons[1]._bias = Value(0.0)
+
+    # Last layer (linear): w=[-1, -1], b=0 → -1*1 + -1*1 + 0 = -2
+    mlp._layers[1]._neurons[0]._weights = [Value(-1.0), Value(-1.0)]
+    mlp._layers[1]._neurons[0]._bias = Value(0.0)
+
+    out = mlp([0.5, 0.5])
+    assert out[0].data < 0  # negative output proves no relu on last layer
 
 
 def test_layer_controlled_weights():
