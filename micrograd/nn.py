@@ -16,13 +16,7 @@ class Module:
             "Number input elements must match configured inputs"
         )
 
-        out = 0
-        for x, w in zip(input, self._weights):
-            out += w * x
-
-        out += self._bias
-
-        return out
+        return (sum((w * x for w, x in zip(input, self._weights))) + self._bias).relu()
 
     def parameters(self) -> list[Value]:
         return self._weights + [self._bias]
