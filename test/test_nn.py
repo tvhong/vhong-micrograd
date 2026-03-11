@@ -84,3 +84,19 @@ def test_mlp_output_non_negative():
     for _ in range(100):
         out = MLP(3, [4, 4, 1])([1, 2, 3])
         assert all(y.data >= 0 for y in out)
+
+
+def test_layer_controlled_weights():
+    layer = Layer(2, 2)
+
+    # Neuron 0: w=[1, 2], b=0.5 → relu(1*3 + 2*4 + 0.5) = relu(11.5) = 11.5
+    layer._neurons[0]._weights = [Value(1.0), Value(2.0)]
+    layer._neurons[0]._bias = Value(0.5)
+
+    # Neuron 1: w=[-1, -1], b=0.0 → relu(-1*3 + -1*4 + 0) = relu(-7) = 0
+    layer._neurons[1]._weights = [Value(-1.0), Value(-1.0)]
+    layer._neurons[1]._bias = Value(0.0)
+
+    out = layer([3.0, 4.0])
+    assert out[0].data == 11.5
+    assert out[1].data == 0.0  # relu clamps negative to 0
