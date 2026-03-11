@@ -51,6 +51,28 @@ def test_neuron_zero_grad():
     assert all(p.grad == 0 for p in n.parameters())
 
 
+def test_neuron_nonlin_true():
+    n = Neuron(1, nonlin=True)
+    # Force negative weights to
+    n._weights = [Value(-1.0)]
+    n._bias = Value(-2.0)
+
+    out = n([5.0])
+
+    assert out.data == 0
+
+
+def test_neuron_nonlin_false():
+    n = Neuron(1, nonlin=False)
+    # Force negative weights to
+    n._weights = [Value(-1.0)]
+    n._bias = Value(-2.0)
+
+    out = n([5.0])
+
+    assert out.data == -7  # 5 * -1 - 2
+
+
 def test_layer_parameters_count():
     l1 = Layer(3, 4)
 

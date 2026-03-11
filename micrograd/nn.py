@@ -15,19 +15,21 @@ class Module:
 
 
 class Neuron(Module):
-    def __init__(self, n_inputs: int) -> None:
+    def __init__(self, n_inputs: int, nonlin: bool = True) -> None:
         self._weights: list[Value] = []
         for i in range(n_inputs):
             self._weights.append(self._sample())
 
         self._bias: Value = self._sample()
+        self._nonlin: bool = nonlin
 
     def __call__(self, input: Sequence[float | Value]) -> Value:
         assert len(input) == len(self._weights), (
             "Number input elements must match configured inputs"
         )
 
-        return (sum((w * x for w, x in zip(input, self._weights))) + self._bias).relu()
+        raw = sum((w * x for w, x in zip(input, self._weights))) + self._bias
+        return raw.relu() if self._nonlin else raw
 
     @override
     def parameters(self) -> list[Value]:
@@ -38,9 +40,9 @@ class Neuron(Module):
 
 
 class Layer(Module):
-    def __init__(self, nin: int, nout: int) -> None:
+    def __init__(self, nin: int, nout: int, nonlin: bool = True) -> None:
         self._shape: tuple[int, int] = (nin, nout)
-        self._neurons: list[Neuron] = [Neuron(nin) for _ in range(nout)]
+        self._neurons: list[Neuron] = [Neuron(nin, nonlin) for _ in range(nout)]
 
     def __call__(self, input: Sequence[float | Value]) -> list[Value]:
         out: list[Value] = []
@@ -60,9 +62,15 @@ class Layer(Module):
 
 class MLP(Module):
     def __init__(self, nin: int, dims: list[int]) -> None:
-        nins = [nin] + dims[:-1]
-        nouts = dims
-        self._layers: list[Layer] = [Layer(nin, nout) for nin, nout in zip(nins, nouts)]
+        all_dims = [nin] + dims
+        assert len(all_dims) >= 3, "MLP must have at least 1 hidden layer"
+        self._layers: list[Layer] = []
+        for i in range(len(all_dims) - 2):
+            nin = all_dims[i]
+            nout = all_dims[i + 1]
+            self._layers.append(Layer(nin, nout, nonlin=True))
+
+        self._layers.append(Layer(all_dims[-2], all_dims[-1], nonlin=False))
 
     def __call__(self, input: Sequence[float | Value]) -> list[Value]:
         x: list[Value] = [
