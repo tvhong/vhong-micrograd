@@ -21,6 +21,15 @@
 - [x] **Commit 9**: `Module` + `Neuron` — test: forward pass output shape, `parameters()` count, `zero_grad()`
 - [x] **Commit 10**: `Layer` + `MLP` — test: MLP forward pass, backward pass updates gradients correctly
 
+### Phase 4: Training end-to-end
+
+- [ ] **Commit 11**: Add `nonlin` param to `Neuron` (skip relu on last layer) + `MLP` returns single `Value` when final layer has 1 output — test: linear neuron can output negative values, MLP(3,[4,1]) returns `Value` not list
+- [ ] **Commit 12**: Training notebook setup — generate `make_moons` dataset, visualize it with matplotlib scatter plot, build MLP(2, [16, 16, 1])
+- [ ] **Commit 13**: Loss function — implement SVM max-margin (hinge) loss + L2 regularization. Quiz: what is hinge loss, why L2 reg, what does `(1 + -yi*scorei).relu()` mean geometrically?
+- [ ] **Commit 14**: Training loop — implement SGD with learning rate decay, train for 100 steps, print loss + accuracy each step, observe loss going down. Quiz: what is SGD, why zero_grad before backward, why decay learning rate?
+- [ ] **Commit 15**: Visualization — plot loss curve over training steps, plot decision boundary (contour plot), understand what the model learned
+- [ ] **Commit 16**: Integration test — automated test that trains MLP on make_moons, asserts loss decreases and accuracy > 90%
+
 ---
 
 ## Learning Strategy
