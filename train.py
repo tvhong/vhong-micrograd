@@ -26,8 +26,8 @@ from micrograd.engine import Value
 from micrograd.nn import MLP
 
 # --- 1. Generate dataset ---
-np.random.seed(1337)
-random.seed(1337)
+np.random.seed(1338)
+random.seed(1338)
 
 X: np.ndarray
 y: np.ndarray
@@ -57,23 +57,35 @@ def loss() -> tuple[Value, float]:
         6. Accuracy: fraction of samples where sign(score) matches label
     """
     # Forward pass — get a score for each input
-    inputs = ...  # TODO: convert each row of X into a list of Values
-    scores = ...  # TODO: run each input through the model
+    inputs = [(Value(x1), Value(x2)) for x1, x2 in X]
+    scores = [model(x)[0] for x in inputs]
 
     # Hinge loss — penalise scores with margin < 1
-    losses = ...  # TODO: (1 + -yi * scorei).relu() for each sample
-    data_loss = ...  # TODO: average the losses
+    losses = [_hinge_loss(yi, scorei) for yi, scorei in zip(y.tolist(), scores)]
+    data_loss = sum(losses) / len(losses)
 
     # L2 regularization — penalise large weights
     alpha = 1e-4
-    reg_loss = ...  # TODO: alpha * sum of p*p for all model parameters
+    reg_loss = alpha * sum([p * p for p in model.parameters()])
 
-    total_loss = ...  # TODO: data_loss + reg_loss
+    total_loss = data_loss + reg_loss
 
-    # Accuracy
-    accuracy = ...  # TODO: fraction of samples where (yi > 0) == (scorei.data > 0)
+    accuracy = _accuracy(y, scores)
 
     return total_loss, accuracy
+
+
+def _hinge_loss(yi: float, scorei: Value) -> Value:
+    return (1 + -yi * scorei).relu()
+
+
+def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
+    assert y.shape[0] == len(scores)
+    rights = 0
+    for yi, scorei in zip(y.tolist(), scores):
+        rights += int((yi > 0) == (scorei.data > 0))
+
+    return rights / y.shape[0]
 
 
 if __name__ == "__main__":
