@@ -44,7 +44,10 @@ model = MLP(2, [16, 16, 1])
 EPOCHS = 100
 
 
-def train(X: np.ndarray, y: np.ndarray):
+def train(X: np.ndarray, y: np.ndarray, learning_rate: float, decade_rate: float):
+    """
+    decade_rate: 0.01
+    """
     for step in range(EPOCHS):
         scores = forward(X)
         total_loss, acc = loss(scores, y)
@@ -52,6 +55,9 @@ def train(X: np.ndarray, y: np.ndarray):
 
         model.zero_grad()
         total_loss.backward()
+
+        update(model, learning_rate)
+        learning_rate *= 1 - decade_rate
 
 
 def forward(X: np.ndarray) -> list[Value]:
@@ -80,6 +86,11 @@ def loss(scores: list[Value], y: np.ndarray) -> tuple[Value, float]:
     accuracy = _accuracy(y, scores)
 
     return total_loss, accuracy
+
+
+def update(model: MLP, learning_rate: float):
+    for p in model.parameters():
+        p.data -= learning_rate * p.grad
 
 
 def _hinge_loss(yi: float, scorei: Value) -> Value:
