@@ -133,3 +133,36 @@ def test_layer_controlled_weights():
     out = layer([3.0, 4.0])
     assert out[0].data == 11.5
     assert out[1].data == 0.0  # relu clamps negative to 0
+
+
+def test_mlp_save_load_preserves_architecture(tmp_path):
+    mlp = MLP(3, [4, 4, 1])
+    path = str(tmp_path / "model.json")
+    mlp.save(path)
+
+    loaded = MLP.load(path)
+    assert loaded._nin == 3
+    assert loaded._dims == [4, 4, 1]
+
+
+def test_mlp_save_load_preserves_parameters(tmp_path):
+    mlp = MLP(3, [4, 4, 1])
+    path = str(tmp_path / "model.json")
+    mlp.save(path)
+
+    loaded = MLP.load(path)
+    original_params = [p.data for p in mlp.parameters()]
+    loaded_params = [p.data for p in loaded.parameters()]
+    assert original_params == loaded_params
+
+
+def test_mlp_save_load_produces_same_output(tmp_path):
+    mlp = MLP(2, [4, 4, 1])
+    path = str(tmp_path / "model.json")
+    mlp.save(path)
+
+    loaded = MLP.load(path)
+    test_input = [0.5, -0.3]
+    original_out = mlp(test_input)[0].data
+    loaded_out = loaded(test_input)[0].data
+    assert original_out == loaded_out
