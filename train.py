@@ -41,6 +41,19 @@ print(f"{y.shape=} ({y.min().item(), y.max().item()})")
 model = MLP(2, [16, 16, 1])
 
 
+EPOCHS = 100
+
+
+def train(X: np.ndarray, y: np.ndarray):
+    for step in range(EPOCHS):
+        scores = forward(X)
+        total_loss, acc = loss(scores, y)
+        print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
+
+        model.zero_grad()
+        total_loss.backward()
+
+
 def forward(X: np.ndarray) -> list[Value]:
     """Run each sample through the model, return list of scores."""
     inputs = [(Value(x1), Value(x2)) for x1, x2 in X]
@@ -83,6 +96,4 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
 
 
 if __name__ == "__main__":
-    scores = forward(X)
-    total_loss, acc = loss(scores, y)
-    print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
+    train(X, y)
