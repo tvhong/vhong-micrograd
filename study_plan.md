@@ -24,9 +24,9 @@
 ### Phase 4: Training end-to-end
 
 - [x] **Commit 11**: Add `nonlin` param to `Neuron` (skip relu on last layer) — test: linear neuron can output negative values, MLP last layer is linear
-- [ ] **Commit 12**: Training script scaffold (`train.py`) — generate `make_moons` dataset, build MLP(2, [16, 16, 1]), implement loss function (SVM hinge loss + L2 reg). Quiz: what is hinge loss, why L2 reg, what does `(1 + -yi*scorei).relu()` mean geometrically?
-- [ ] **Commit 13**: Training loop in `train.py` — implement SGD with learning rate decay, train for 100 steps, print loss + accuracy each step. Quiz: what is SGD, why zero_grad before backward, why decay learning rate?
-- [ ] **Commit 14**: Visualization in `train.py` — plot loss curve over training steps, plot decision boundary (contour plot), save plots to `plots/`. Understand what the model learned.
+- [x] **Commit 12**: Training script scaffold (`train.py`) — generate `make_moons` dataset, build MLP(2, [16, 16, 1]), implement loss function (SVM hinge loss + L2 reg). Quiz: what is hinge loss, why L2 reg, what does `(1 + -yi*scorei).relu()` mean geometrically?
+- [x] **Commit 13**: Training loop in `train.py` — implement SGD with learning rate decay, train for 100 steps, print loss + accuracy each step. Quiz: what is SGD, why zero_grad before backward, why decay learning rate?
+- [x] **Commit 14**: Visualization in `train.py` — plot loss curve over training steps, plot decision boundary (contour plot), save plots to `plots/`. Understand what the model learned.
 - [ ] **Commit 15**: Integration test — automated pytest that trains MLP on make_moons, asserts loss decreases and accuracy > 90%
 
 ---
