@@ -1,12 +1,14 @@
 import random
 
 import numpy as np
+import pytest
 from sklearn.datasets import make_moons
 
 from micrograd.nn import MLP
 from train import train
 
 
+@pytest.mark.slow
 def test_training_reduces_loss_and_reaches_90_accuracy():
     """Train MLP on make_moons end-to-end and verify it learns."""
     np.random.seed(1337)
