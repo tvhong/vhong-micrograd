@@ -34,17 +34,6 @@
 
 ## Learning Strategy
 
-### What I (Claude) implement
-
-- **Commit 1**: Scaffold — boilerplate
-- **Commit 2**: `Value.__init__` + `__repr__` — walk through the foundation
-- **Commit 3**: `__add__` + test — full demonstration of the pattern: forward value, closure-based `_backward`, PyTorch comparison test
-
-### What you implement (with guidance)
-
-- **Commits 4–8**: `__mul__`, `__pow__`, `relu`, `backward()`, operator sugar — same pattern as `__add__`, only the math changes
-- **Commits 9–10**: `nn.py` — composing `Value` ops into neural net modules
-
 ### Quizzes
 
 Before each op you implement, you'll be quizzed on:
@@ -52,17 +41,3 @@ Before each op you implement, you'll be quizzed on:
 - The math: e.g. *"What is ∂(x*y)/∂x?"\*
 - The pattern: e.g. _"What should `_backward` capture in its closure?"_
 - Concepts: e.g. _"Why do we `+=` instead of `=` when accumulating gradients?"_
-
----
-
-## Key Tips
-
-1. **Math first, code second.** Derive the local gradient on paper before touching the keyboard. The code is just translating `∂out/∂self` into Python.
-
-2. **The closure pattern is the key insight.** `_backward` captures `self`, `other`, and `out` — a mini-function that knows how to push gradients backward through one operation.
-
-3. **`+=` not `=` for grads.** A single `Value` node can appear multiple times in a graph (e.g. `x * x`). Gradients from all uses must accumulate.
-
-4. **Always verify against PyTorch.** Write the test first, then implement until it passes.
-
-5. **Draw the graph.** For any expression, sketch the DAG. `backward()` is just a reverse post-order traversal of that graph.
