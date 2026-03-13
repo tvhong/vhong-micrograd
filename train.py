@@ -96,9 +96,14 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
     return num_correct / y.shape[0]
 
 
-def plot_loss_curve(history: list[tuple[float, float]]):
-    """Plot loss over epochs and save to plots/loss_curve.png."""
+def plot(
+    history: list[tuple[float, float]], model: MLP, X: np.ndarray, y: np.ndarray
+):
+    """Generate all training plots: loss curve, accuracy curve, and decision boundary."""
     losses = [h[0] for h in history]
+    accuracies = [h[1] * 100 for h in history]
+
+    # Loss curve
     plt.figure()
     plt.plot(range(len(losses)), losses)
     plt.xlabel("Epoch")
@@ -107,10 +112,7 @@ def plot_loss_curve(history: list[tuple[float, float]]):
     plt.savefig("plots/loss_curve.png")
     plt.close()
 
-
-def plot_accuracy_curve(history: list[tuple[float, float]]):
-    """Plot accuracy over epochs and save to plots/accuracy_curve.png."""
-    accuracies = [h[1] * 100 for h in history]
+    # Accuracy curve
     plt.figure()
     plt.plot(range(len(accuracies)), accuracies)
     plt.xlabel("Epoch")
@@ -119,24 +121,14 @@ def plot_accuracy_curve(history: list[tuple[float, float]]):
     plt.savefig("plots/accuracy_curve.png")
     plt.close()
 
-
-def plot_decision_boundary(model: MLP, X: np.ndarray, y: np.ndarray):
-    """Plot model's decision boundary with data points overlaid.
-
-    Creates a grid over the input space, classifies each point,
-    and uses contourf to color regions. Saves to plots/decision_boundary.png.
-    """
-    # Create a mesh grid with some padding around the data
+    # Decision boundary
     x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
     y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
     xx, yy = np.meshgrid(np.linspace(x_min, x_max, 50), np.linspace(y_min, y_max, 50))
-
-    # Classify each grid point
     grid_points = np.c_[xx.ravel(), yy.ravel()]
     zz = np.array([model([x1, x2])[0].data for x1, x2 in grid_points])
     zz = zz.reshape(xx.shape)
 
-    # Plot colored regions and data points
     plt.figure()
     plt.contourf(xx, yy, zz, levels=[-1e9, 0, 1e9], colors=["#deebf7", "#fee0d2"], alpha=0.8)
     plt.contour(xx, yy, zz, levels=[0], colors="black", linewidths=1)
@@ -162,6 +154,4 @@ if __name__ == "__main__":
     model = MLP(2, [16, 16, 1])
 
     history = train(model, X, y)
-    plot_loss_curve(history)
-    plot_accuracy_curve(history)
-    plot_decision_boundary(model, X, y)
+    plot(history, model, X, y)
