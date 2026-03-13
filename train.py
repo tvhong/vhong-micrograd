@@ -26,34 +26,22 @@ from sklearn.datasets import make_moons
 from micrograd.engine import Value
 from micrograd.nn import MLP
 
-# --- 1. Generate dataset ---
-np.random.seed(1338)
-random.seed(1338)
-
-X: np.ndarray
-y: np.ndarray
-X, y = make_moons(n_samples=100, noise=0.1)
-y = y * 2 - 1  # Convert {0, 1} to {-1, 1}
-# print(f"{X=}, {y=}")
-print(f"{X.shape=} ({X.min().item(), X.max().item()})")
-print(f"{y.shape=} ({y.min().item(), y.max().item()})")
-
-# --- 2. Build model ---
-model = MLP(2, [16, 16, 1])
-
-
 EPOCHS = 20
 
 
 def train(
-    X: np.ndarray, y: np.ndarray, learning_rate: float = 0.05, decay_rate: float = 0.01
+    model: MLP,
+    X: np.ndarray,
+    y: np.ndarray,
+    learning_rate: float = 0.05,
+    decay_rate: float = 0.01,
 ) -> list[tuple[float, float]]:
-    losses = []
+    history = []
     for epoch in range(EPOCHS):
-        scores = forward(X)
-        total_loss, acc = loss(scores, y)
+        scores = forward(model, X)
+        total_loss, acc = loss(model, scores, y)
         print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
-        losses.append((total_loss.data, acc))
+        history.append((total_loss.data, acc))
 
         model.zero_grad()
         total_loss.backward()
@@ -61,16 +49,16 @@ def train(
         step(model, learning_rate)
         learning_rate *= 1 - decay_rate
 
-    return losses
+    return history
 
 
-def forward(X: np.ndarray) -> list[Value]:
+def forward(model: MLP, X: np.ndarray) -> list[Value]:
     """Run each sample through the model, return list of scores."""
     inputs = [(Value(x1), Value(x2)) for x1, x2 in X]
     return [model(x)[0] for x in inputs]
 
 
-def loss(scores: list[Value], y: np.ndarray) -> tuple[Value, float]:
+def loss(model: MLP, scores: list[Value], y: np.ndarray) -> tuple[Value, float]:
     """Compute hinge loss + L2 reg and accuracy from pre-computed scores.
 
     Returns:
@@ -134,7 +122,7 @@ def plot_accuracy_curve(history: list[tuple[float, float]]):
     plt.close()
 
 
-def plot_decision_boundary(X: np.ndarray, y: np.ndarray):
+def plot_decision_boundary(model: MLP, X: np.ndarray, y: np.ndarray):
     """Plot model's decision boundary with data points overlaid.
 
     Creates a grid over the input space, classifies each point,
@@ -165,7 +153,17 @@ def plot_decision_boundary(X: np.ndarray, y: np.ndarray):
 
 
 if __name__ == "__main__":
-    history = train(X, y)
+    np.random.seed(1338)
+    random.seed(1338)
+
+    X, y = make_moons(n_samples=100, noise=0.1)
+    y = y * 2 - 1  # Convert {0, 1} to {-1, 1}
+    print(f"{X.shape=} ({X.min().item(), X.max().item()})")
+    print(f"{y.shape=} ({y.min().item(), y.max().item()})")
+
+    model = MLP(2, [16, 16, 1])
+
+    history = train(model, X, y)
     plot_loss_curve(history)
     plot_accuracy_curve(history)
-    plot_decision_boundary(X, y)
+    plot_decision_boundary(model, X, y)
