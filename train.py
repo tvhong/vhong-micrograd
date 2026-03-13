@@ -19,6 +19,7 @@ Plan:
 
 import random
 
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import make_moons
 
@@ -46,17 +47,21 @@ EPOCHS = 100
 
 def train(
     X: np.ndarray, y: np.ndarray, learning_rate: float = 0.05, decay_rate: float = 0.01
-):
+) -> list[tuple[float, float]]:
+    losses = []
     for epoch in range(EPOCHS):
         scores = forward(X)
         total_loss, acc = loss(scores, y)
         print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
+        losses.append((total_loss.data, acc))
 
         model.zero_grad()
         total_loss.backward()
 
         step(model, learning_rate)
         learning_rate *= 1 - decay_rate
+
+    return losses
 
 
 def forward(X: np.ndarray) -> list[Value]:
@@ -105,5 +110,18 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
     return num_correct / y.shape[0]
 
 
+def plot_loss_curve(history: list[tuple[float, float]]):
+    """Plot loss over epochs and save to plots/loss_curve.png.
+
+    Steps:
+        1. Extract losses from history (first element of each tuple)
+        2. plt.plot() with epochs on x-axis, loss on y-axis
+        3. Add labels: xlabel="Epoch", ylabel="Loss", title="Training Loss"
+        4. plt.savefig("plots/loss_curve.png")
+    """
+    ...  # TODO
+
+
 if __name__ == "__main__":
-    train(X, y)
+    history = train(X, y)
+    plot_loss_curve(history)
