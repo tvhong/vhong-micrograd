@@ -41,25 +41,19 @@ print(f"{y.shape=} ({y.min().item(), y.max().item()})")
 model = MLP(2, [16, 16, 1])
 
 
-def loss() -> tuple[Value, float]:
-    """Compute total loss and accuracy over the full dataset.
+def forward(X: np.ndarray) -> list[Value]:
+    """Run each sample through the model, return list of scores."""
+    inputs = [(Value(x1), Value(x2)) for x1, x2 in X]
+    return [model(x)[0] for x in inputs]
+
+
+def loss(scores: list[Value], y: np.ndarray) -> tuple[Value, float]:
+    """Compute hinge loss + L2 reg and accuracy from pre-computed scores.
 
     Returns:
         (total_loss, accuracy) where total_loss is a Value (for backprop)
         and accuracy is a float between 0 and 1.
-
-    Steps:
-        1. Forward pass: run each sample through the model
-        2. Hinge loss: for each sample, compute (1 + -yi * scorei).relu()
-        3. Data loss: average the hinge losses
-        4. L2 regularization: alpha * sum(p * p) for all parameters, alpha = 1e-4
-        5. Total loss: data_loss + reg_loss
-        6. Accuracy: fraction of samples where sign(score) matches label
     """
-    # Forward pass — get a score for each input
-    inputs = [(Value(x1), Value(x2)) for x1, x2 in X]
-    scores = [model(x)[0] for x in inputs]
-
     # Hinge loss — penalise scores with margin < 1
     losses = [_hinge_loss(yi, scorei) for yi, scorei in zip(y.tolist(), scores)]
     data_loss = sum(losses) / len(losses)
@@ -89,5 +83,6 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
 
 
 if __name__ == "__main__":
-    total_loss, acc = loss()
+    scores = forward(X)
+    total_loss, acc = loss(scores, y)
     print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
