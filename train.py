@@ -97,7 +97,11 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
 
 
 def plot(
-    history: list[tuple[float, float]], model: MLP, X: np.ndarray, y: np.ndarray
+    history: list[tuple[float, float]],
+    model: MLP,
+    X: np.ndarray,
+    y: np.ndarray,
+    output_dir: str = "plots",
 ):
     """Generate all training plots: loss curve, accuracy curve, and decision boundary."""
     losses = [h[0] for h in history]
@@ -109,7 +113,7 @@ def plot(
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title("Training Loss")
-    plt.savefig("plots/loss_curve.png")
+    plt.savefig(f"{output_dir}/loss_curve.png")
     plt.close()
 
     # Accuracy curve
@@ -118,7 +122,7 @@ def plot(
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy (%)")
     plt.title("Training Accuracy")
-    plt.savefig("plots/accuracy_curve.png")
+    plt.savefig(f"{output_dir}/accuracy_curve.png")
     plt.close()
 
     # Decision boundary
@@ -138,7 +142,7 @@ def plot(
     plt.xlabel("x1")
     plt.ylabel("x2")
     plt.title("Decision Boundary")
-    plt.savefig("plots/decision_boundary.png")
+    plt.savefig(f"{output_dir}/decision_boundary.png")
     plt.close()
 
 

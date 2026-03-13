@@ -5,7 +5,7 @@ import pytest
 from sklearn.datasets import make_moons
 
 from micrograd.nn import MLP
-from train import train
+from train import plot, train
 
 
 @pytest.mark.slow
@@ -26,3 +26,20 @@ def test_training_reduces_loss_and_reaches_90_accuracy():
 
     assert final_loss < first_loss, f"Loss did not decrease: {first_loss} -> {final_loss}"
     assert final_acc >= 0.9, f"Accuracy too low: {final_acc * 100:.1f}%"
+
+
+def test_plot_produces_three_files(tmp_path):
+    np.random.seed(1337)
+    random.seed(1337)
+
+    X, y = make_moons(n_samples=20, noise=0.1)
+    y = y * 2 - 1
+
+    model = MLP(2, [4, 4, 1])
+    history = [(0.5, 0.7), (0.3, 0.85)]
+
+    plot(history, model, X, y, output_dir=str(tmp_path))
+
+    assert (tmp_path / "loss_curve.png").exists()
+    assert (tmp_path / "accuracy_curve.png").exists()
+    assert (tmp_path / "decision_boundary.png").exists()
