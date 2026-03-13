@@ -16,7 +16,7 @@ def test_training_reduces_loss_and_reaches_90_accuracy():
     y = y * 2 - 1
 
     model = MLP(2, [16, 16, 1])
-    history = train(model, X, y, learning_rate=1.0, decay_rate=0.009)
+    history = train(model, X, y, learning_rate=1.0, decay_rate=0.009, epochs=100)
 
     first_loss = history[0][0]
     final_loss = history[-1][0]

@@ -26,18 +26,16 @@ from sklearn.datasets import make_moons
 from micrograd.engine import Value
 from micrograd.nn import MLP
 
-EPOCHS = 20
-
-
 def train(
     model: MLP,
     X: np.ndarray,
     y: np.ndarray,
     learning_rate: float = 0.05,
     decay_rate: float = 0.01,
+    epochs: int = 20,
 ) -> list[tuple[float, float]]:
     history = []
-    for epoch in range(EPOCHS):
+    for epoch in range(epochs):
         scores = forward(model, X)
         total_loss, acc = loss(model, scores, y)
         print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
