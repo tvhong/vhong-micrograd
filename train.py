@@ -45,9 +45,9 @@ EPOCHS = 100
 
 
 def train(
-    X: np.ndarray, y: np.ndarray, learning_rate: float = 0.05, decade_rate: float = 0.01
+    X: np.ndarray, y: np.ndarray, learning_rate: float = 0.05, decay_rate: float = 0.01
 ):
-    for step in range(EPOCHS):
+    for epoch in range(EPOCHS):
         scores = forward(X)
         total_loss, acc = loss(scores, y)
         print(f"loss={total_loss.data:.4f}, accuracy={acc * 100:.1f}%")
@@ -55,8 +55,8 @@ def train(
         model.zero_grad()
         total_loss.backward()
 
-        update(model, learning_rate)
-        learning_rate *= 1 - decade_rate
+        step(model, learning_rate)
+        learning_rate *= 1 - decay_rate
 
 
 def forward(X: np.ndarray) -> list[Value]:
@@ -87,7 +87,7 @@ def loss(scores: list[Value], y: np.ndarray) -> tuple[Value, float]:
     return total_loss, accuracy
 
 
-def update(model: MLP, learning_rate: float):
+def step(model: MLP, learning_rate: float):
     for p in model.parameters():
         p.data -= learning_rate * p.grad
 
@@ -98,11 +98,11 @@ def _hinge_loss(yi: float, scorei: Value) -> Value:
 
 def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
     assert y.shape[0] == len(scores)
-    rights = 0
+    num_correct = 0
     for yi, scorei in zip(y.tolist(), scores):
-        rights += int((yi > 0) == (scorei.data > 0))
+        num_correct += int((yi > 0) == (scorei.data > 0))
 
-    return rights / y.shape[0]
+    return num_correct / y.shape[0]
 
 
 if __name__ == "__main__":
