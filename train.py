@@ -122,6 +122,19 @@ def plot_loss_curve(history: list[tuple[float, float]]):
     plt.close()
 
 
+def plot_accuracy_curve(history: list[tuple[float, float]]):
+    """Plot accuracy over epochs and save to plots/accuracy_curve.png."""
+    accuracies = [h[1] * 100 for h in history]
+    plt.figure()
+    plt.plot(range(len(accuracies)), accuracies)
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy (%)")
+    plt.title("Training Accuracy")
+    plt.savefig("plots/accuracy_curve.png")
+    plt.close()
+
+
 if __name__ == "__main__":
     history = train(X, y)
     plot_loss_curve(history)
+    plot_accuracy_curve(history)
