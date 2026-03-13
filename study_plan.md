@@ -27,7 +27,8 @@
 - [x] **Commit 12**: Training script scaffold (`train.py`) — generate `make_moons` dataset, build MLP(2, [16, 16, 1]), implement loss function (SVM hinge loss + L2 reg). Quiz: what is hinge loss, why L2 reg, what does `(1 + -yi*scorei).relu()` mean geometrically?
 - [x] **Commit 13**: Training loop in `train.py` — implement SGD with learning rate decay, train for 100 steps, print loss + accuracy each step. Quiz: what is SGD, why zero_grad before backward, why decay learning rate?
 - [x] **Commit 14**: Visualization in `train.py` — plot loss curve over training steps, plot decision boundary (contour plot), save plots to `plots/`. Understand what the model learned.
-- [ ] **Commit 15**: Integration test — automated pytest that trains MLP on make_moons, asserts loss decreases and accuracy > 90%
+- [x] **Commit 15**: Integration test — automated pytest that trains MLP on make_moons, asserts loss decreases and accuracy > 90%
+- [x] **Commit 16**: Save/load for MLP — persist model weights and architecture to disk, reload without retraining
 
 ---
 
