@@ -42,7 +42,7 @@ print(f"{y.shape=} ({y.min().item(), y.max().item()})")
 model = MLP(2, [16, 16, 1])
 
 
-EPOCHS = 100
+EPOCHS = 20
 
 
 def train(
@@ -111,15 +111,15 @@ def _accuracy(y: np.ndarray, scores: list[Value]) -> float:
 
 
 def plot_loss_curve(history: list[tuple[float, float]]):
-    """Plot loss over epochs and save to plots/loss_curve.png.
-
-    Steps:
-        1. Extract losses from history (first element of each tuple)
-        2. plt.plot() with epochs on x-axis, loss on y-axis
-        3. Add labels: xlabel="Epoch", ylabel="Loss", title="Training Loss"
-        4. plt.savefig("plots/loss_curve.png")
-    """
-    ...  # TODO
+    """Plot loss over epochs and save to plots/loss_curve.png."""
+    losses = [h[0] for h in history]
+    plt.figure()
+    plt.plot(range(len(losses)), losses)
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training Loss")
+    plt.savefig("plots/loss_curve.png")
+    plt.close()
 
 
 if __name__ == "__main__":
