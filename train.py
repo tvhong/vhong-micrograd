@@ -44,10 +44,9 @@ model = MLP(2, [16, 16, 1])
 EPOCHS = 100
 
 
-def train(X: np.ndarray, y: np.ndarray, learning_rate: float, decade_rate: float):
-    """
-    decade_rate: 0.01
-    """
+def train(
+    X: np.ndarray, y: np.ndarray, learning_rate: float = 0.05, decade_rate: float = 0.01
+):
     for step in range(EPOCHS):
         scores = forward(X)
         total_loss, acc = loss(scores, y)
